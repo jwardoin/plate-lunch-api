@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+    <ul class="plateLunch">
+        <% info.forEach(pls => {%>
+            <li class="plateLunch">
+                <span><%= pls.restaurantName %></span>
+                <!-- <span><%= %></span> -->
+                <span class="del">delete</span>
+            </li>
+       <% })%>
+    </ul>
+
+    <form action="/addPlateLunchSpot" method="POST">
+        <input type="text" placeholder="Restaurant Name" name="restaurantName">
+        <!-- <input type="text" placeholder="" name=""> -->
+        
+        <input type="submit">
+    </form>
+
+    <script src="main.js"></script>
+</body>
+</html>
