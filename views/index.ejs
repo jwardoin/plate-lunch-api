@@ -12,7 +12,9 @@
         <% info.forEach(pls => {%>
             <li class="plateLunch">
                 <span><%= pls.restaurantName %></span>
-                <!-- <span><%= %></span> -->
+                <!-- <span></span> -->
+                <span><%= pls.recommendedBy %></span>
+                <span class="recommend">recommend</span>
                 <span class="del">delete</span>
             </li>
        <% })%>

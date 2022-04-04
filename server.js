@@ -2,15 +2,16 @@ const express = require('express')
 const cors = require('cors')
 const MongoClient = require('mongodb').MongoClient
 const ejs = require('ejs')
+const PORT = process.env.PORT || 8000
+const dotenv = require('dotenv').config()
 
-const pw = 'not today satan' //This is not the password - waiting to learn to hide, so this is just a placeholder
 
 const app = express()
 
-const PORT = process.env.PORT || 8000
+
 
 let db,
-    dbConnectionStr = `mongodb+srv://jwardoin:${pw}@cluster0.ynivp.mongodb.net/plateLunchAPI?retryWrites=true&w=majority`,
+    dbConnectionStr = process.env.DB_STRING,
     dbName = 'plate-lunch-api'
 
 MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true })
@@ -66,15 +67,15 @@ app.use(cors())
 
 
 app.get('/', (req, res) => {
-    db.collection('plateLunchSpots').find().toArray()
-    .then(data =>{
+    db.collection('plateLunchSpots').find().sort({recommendedBy: -1}).toArray() 
+    .then(data => {
         res.render('index.ejs', { info: data })
     })
     .catch(err => console.error(err))
 
 }) 
 
-app.post('/addPlateLunchSpot', (req, res)=>{
+app.post('/addPlateLunchSpot', (req, res)=> {
     db.collection('plateLunchSpots').insertOne(req.body)
     .then(result => {
         console.log('Plate Lunch Spot added')
@@ -83,13 +84,26 @@ app.post('/addPlateLunchSpot', (req, res)=>{
     .catch(err => console.error(err))
 })
 
-// app.put('/info', (req, res)=>{
-//     //update info
-// })
+app.put('/addRecommendation', (req, res)=> {
+    db.collection('plateLunchSpots').updateOne({restaurantName: req.body.restaurantName, 
+        recommendedBy: req.body.recommendedBy},{
+        $set: {
+            recommendedBy: req.body.recommendedBy + 1
+        }
+    },{
+        sort: {_id: -1}, 
+        upsert: false
+    })
+    .then(result => {
+        console.log('Added a recommendation')
+        res.json("Recommended")
+    })
+})
 
-app.delete('/deletePLS', (req, res)=>{
+
+app.delete('/deletePLS', (req, res)=> {
     db.collection('plateLunchSpots').deleteOne({restaurantName: req.body.restaurantName})
-    .then (result =>{
+    .then (result => {
         console.log("Deleted")
         res.json("Deleted")
     })
