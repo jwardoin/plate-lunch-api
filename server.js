@@ -76,7 +76,7 @@ app.get('/', (req, res) => {
 }) 
 
 app.post('/addPlateLunchSpot', (req, res)=> {
-    db.collection('plateLunchSpots').insertOne(req.body)
+    db.collection('plateLunchSpots').insertOne({restaurantName: req.body.restaurantName, recommendedBy: 0})
     .then(result => {
         console.log('Plate Lunch Spot added')
         res.redirect('/')
