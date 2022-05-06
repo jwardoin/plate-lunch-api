@@ -1,24 +1,17 @@
 const express = require('express')
 const cors = require('cors')
-const MongoClient = require('mongodb').MongoClient
+const mongoose = require('mongoose')
 const ejs = require('ejs')
-const PORT = process.env.PORT || 8000
-const dotenv = require('dotenv').config()
+const dotenv = require('dotenv')
+const dbConnection = require('./config/database')
 
+// Path to config
+dotenv.config( {path: './config/config.env'} )
+
+// Connect to db
+dbConnection()
 
 const app = express()
-
-
-
-let db,
-    dbConnectionStr = process.env.DB_STRING,
-    dbName = 'plate-lunch-api'
-
-MongoClient.connect(dbConnectionStr, { useUnifiedTopology: true })
-    .then(client => {
-        console.log(`Connected to ${dbName} Database`)
-        db = client.db(dbName)
-    })
 
 app.set('view engine', 'ejs')
 app.use(express.static('public'))
@@ -109,6 +102,8 @@ app.delete('/deletePLS', (req, res)=> {
     })
     .catch(err => console.error(err)) 
 })
+
+const PORT = process.env.PORT || 8000
 
 app.listen(PORT, () => {
     console.log(`Server running on port: ${PORT}`)
